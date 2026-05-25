@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fix Hospital Admin Field</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .container {
+      margin-top: 50px;
+    }
+    .hidden {
+      display: none;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .highlight {
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .hospital-field {
+      background-color: #fff3cd;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #ffeeba;
+    }
+    .branch-field {
+      background-color: #e2e3e5;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #d6d8db;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <div class="card">
+          <div class="card-header">
+            <h3>Fix for Hospital Admin Field Visibility</h3>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-info">
+              <strong>Instructions:</strong> This standalone page demonstrates how the field visibility should work when switching roles. You can use this as a reference to fix your main application.
+            </div>
+
+            <form id="userForm">
+              <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" name="role" class="form-control">
+                  <option value="">Select Role</option>
+                  <option value="Super Admin">Super Admin</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Hospital Admin">Hospital Admin</option>
+                  <option value="Staff Member">Staff Member</option>
+                </select>
+              </div>
+
+              <div id="hospitalNameField" class="form-group hospital-field hidden">
+                <label for="hospitalName">Hospital Name</label>
+                <input type="text" id="hospitalName" name="hospitalName" class="form-control" placeholder="Enter hospital name">
+              </div>
+
+              <div id="branchField" class="form-group branch-field">
+                <label for="branchId">Branch</label>
+                <select id="branchId" name="branchId" class="form-control">
+                  <option value="">Select Branch</option>
+                  <option value="1">Branch A</option>
+                  <option value="2">Branch B</option>
+                  <option value="3">Branch C</option>
+                </select>
+              </div>
+
+              <div class="highlight">
+                <div><strong>Current Role:</strong> <span id="currentRole">Staff Member</span></div>
+                <div><strong>Hospital Name Field:</strong> <span id="hospitalNameStatus">Hidden</span></div>
+                <div><strong>Branch Field:</strong> <span id="branchStatus">Visible</span></div>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary ml-2" onclick="window.history.back()">Back</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple vanilla JavaScript to handle role switching
+    document.addEventListener('DOMContentLoaded', function() {
+      const roleSelect = document.getElementById('role');
+      const hospitalNameField = document.getElementById('hospitalNameField');
+      const branchField = document.getElementById('branchField');
+      const currentRole = document.getElementById('currentRole');
+      const hospitalNameStatus = document.getElementById('hospitalNameStatus');
+      const branchStatus = document.getElementById('branchStatus');
+
+      // Initial state
+      currentRole.textContent = 'Not selected';
+      
+      // Handle role change
+      roleSelect.addEventListener('change', function() {
+        const role = this.value;
+        currentRole.textContent = role || 'Not selected';
+        
+        if (role === 'Hospital Admin') {
+          // Show Hospital Name field, hide Branch field
+          hospitalNameField.classList.remove('hidden');
+          branchField.classList.add('hidden');
+          hospitalNameStatus.textContent = 'Visible';
+          branchStatus.textContent = 'Hidden';
+        } else if (role) {
+          // Show Branch field, hide Hospital Name field
+          hospitalNameField.classList.add('hidden');
+          branchField.classList.remove('hidden');
+          hospitalNameStatus.textContent = 'Hidden';
+          branchStatus.textContent = 'Visible';
+        } else {
+          // No role selected
+          hospitalNameField.classList.add('hidden');
+          branchField.classList.add('hidden');
+          hospitalNameStatus.textContent = 'Hidden';
+          branchStatus.textContent = 'Hidden';
+        }
+      });
+      
+      // Prevent form submission
+      document.getElementById('userForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Form would be submitted with: \nRole: ' + roleSelect.value + 
+              '\nHospital Name: ' + document.getElementById('hospitalName').value +
+              '\nBranch: ' + document.getElementById('branchId').value);
+      });
+    });
+  </script>
+</body>
+</html> 

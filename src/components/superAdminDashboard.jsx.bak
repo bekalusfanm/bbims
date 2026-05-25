@@ -1,0 +1,532 @@
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { getAllBranches } from "../services/branchService";
+import { getDonors } from "../services/donorService";
+import { getBloodBags } from "../services/inventoryService";
+import { getBloodRequests, saveBloodRequest } from "../services/bloodRequestService";
+import { toast } from "react-toastify";
+import { useUser } from "../context/userContext";
+import { Link } from "react-router-dom";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
+
+const DashCard = styled.div`
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+  background-color: #fff;
+  transition: transform 0.2s;
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;
+
+const StatCard = styled(DashCard)`
+  text-align: center;
+  cursor: pointer;
+`;
+
+const SuperAdminDashboard = () => {
+  const user = useUser();
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    branches: [],
+    donors: [],
+    inventory: [],
+    totalBranches: 0,
+    totalDonors: 0,
+    totalBloodBags: 0,
+    bloodTypeDistribution: {},
+    branchPerformance: [],
+    systemHealth: {
+      status: "healthy",
+      lastBackup: null,
+      activeUsers: 0,
+      systemUptime: 0
+    },
+    recentActivity: []
+  });
+  const [loadingRequests, setLoadingRequests] = useState(true);
+  const [bloodRequests, setBloodRequests] = useState([]);
+
+  useEffect(() => {
+    if (user && user.role === "Super Admin") {
+      fetchData();
+      fetchBloodRequests();
+      // Set up polling for real-time updates
+      const interval = setInterval(() => {
+        fetchData();
+        fetchBloodRequests();
+      }, 30000);
+      return () => clearInterval(interval);
+    } else {
+      toast.error("You don't have permission to access this page");
+    }
+  }, [user]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch all required data in parallel
+      const [branches, donors, inventory] = await Promise.all([
+        getAllBranches(),
+        getDonors(),
+        getBloodBags()
+      ]);
+
+      // Process data for stats
+      const bloodTypeDistribution = calculateBloodTypeDistribution(inventory);
+      const branchPerformance = calculateBranchPerformance(branches, donors, inventory);
+      const systemHealth = await getSystemHealth();
+      const recentActivity = await getRecentActivity();
+      
+      setStats({
+        branches,
+        donors,
+        inventory,
+        totalBranches: branches.length,
+        totalDonors: donors.length,
+        totalBloodBags: inventory.length,
+        bloodTypeDistribution,
+        branchPerformance,
+        systemHealth,
+        recentActivity
+      });
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      toast.error("Error loading dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchBloodRequests = async () => {
+    try {
+      setLoadingRequests(true);
+      const response = await getBloodRequests();
+      console.log("Fetched blood requests for dashboard:", response.data);
+      setBloodRequests(response.data);
+    } catch (error) {
+      console.error("Error fetching blood requests:", error);
+      toast.error("Failed to load blood requests");
+    } finally {
+      setLoadingRequests(false);
+    }
+  };
+
+  const calculateBloodTypeDistribution = (inventory) => {
+    const distribution = {};
+    
+    inventory.forEach(bag => {
+      const type = bag.bloodType;
+      if (!distribution[type]) {
+        distribution[type] = 0;
+      }
+      distribution[type]++;
+    });
+    
+    return distribution;
+  };
+
+  const calculateBranchPerformance = (branches, donors, inventory) => {
+    const performance = [];
+    
+    branches.forEach(branch => {
+      const branchDonors = donors.filter(donor => donor.branchId === branch._id);
+      const branchInventory = inventory.filter(bag => bag.branchId === branch._id);
+      
+      performance.push({
+        branchId: branch._id,
+        name: branch.name,
+        location: branch.location,
+        donorCount: branchDonors.length,
+        inventoryCount: branchInventory.length,
+        utilization: inventory.length > 0 ? (branchInventory.length / inventory.length) * 100 : 0
+      });
+    });
+    
+    return performance.sort((a, b) => b.inventoryCount - a.inventoryCount);
+  };
+
+  const getSystemHealth = async () => {
+    // This would be replaced with actual API call
+    return {
+      status: "healthy",
+      lastBackup: new Date().toISOString(),
+      activeUsers: Math.floor(Math.random() * 50) + 10,
+      systemUptime: "99.9%"
+    };
+  };
+
+  const getRecentActivity = async () => {
+    // This would be replaced with actual API call
+    return [
+      {
+        type: "user_login",
+        user: "John Doe",
+        timestamp: new Date().toISOString(),
+        details: "User logged in from IP 192.168.1.1"
+      },
+      {
+        type: "blood_request",
+        user: "Hospital A",
+        timestamp: new Date().toISOString(),
+        details: "New blood request created"
+      }
+    ];
+  };
+
+  const handleQuickAction = (action) => {
+    switch(action) {
+      case "backup":
+        toast.info("Starting system backup...");
+        break;
+      case "maintenance":
+        toast.info("Entering maintenance mode...");
+        break;
+      case "users":
+        window.location.href = "/users";
+        break;
+      case "branches":
+        window.location.href = "/branches";
+        break;
+      case "reports":
+        window.location.href = "/reports";
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleApprove = async (request) => {
+    try {
+      const updatedRequest = { ...request, status: "approved" };
+      await saveBloodRequest(updatedRequest);
+      toast.success("Blood request approved successfully");
+      fetchBloodRequests();
+    } catch (error) {
+      console.error("Error approving blood request:", error);
+      toast.error("Failed to approve blood request");
+    }
+  };
+
+  const handleReject = async (request) => {
+    try {
+      const updatedRequest = { ...request, status: "rejected" };
+      await saveBloodRequest(updatedRequest);
+      toast.success("Blood request rejected");
+      fetchBloodRequests();
+    } catch (error) {
+      console.error("Error rejecting blood request:", error);
+      toast.error("Failed to reject blood request");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6 text-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="mt-3">Loading dashboard data...</p>
+            <div className="progress mt-3">
+              <div className="progress-bar progress-bar-striped progress-bar-animated" 
+                   role="progressbar" 
+                   style={{ width: '100%' }} 
+                   aria-valuenow="100" 
+                   aria-valuemin="0" 
+                   aria-valuemax="100">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mt-4">
+      <div className="row mb-4">
+        <div className="col-12">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h2>Super Admin Dashboard</h2>
+              <p className="text-muted mb-0">
+                System Overview and Management
+              </p>
+            </div>
+            <div className="d-flex gap-2">
+              <button className="btn btn-primary" onClick={() => handleQuickAction("backup")}>
+                <i className="fas fa-download me-2"></i>Backup System
+              </button>
+              <button className="btn btn-warning" onClick={() => handleQuickAction("maintenance")}>
+                <i className="fas fa-tools me-2"></i>Maintenance Mode
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* System Health */}
+      <div className="row mb-4">
+        <div className="col-md-3">
+          <StatCard className={`bg-${stats.systemHealth.status === "healthy" ? "success" : "danger"} text-white`}>
+            <h5>System Status</h5>
+            <h3>{stats.systemHealth.status}</h3>
+            <small>Last checked: {new Date().toLocaleTimeString()}</small>
+          </StatCard>
+        </div>
+        <div className="col-md-3">
+          <StatCard className="bg-info text-white">
+            <h5>Active Users</h5>
+            <h3>{stats.systemHealth.activeUsers}</h3>
+            <small>Currently online</small>
+          </StatCard>
+        </div>
+        <div className="col-md-3">
+          <StatCard className="bg-warning text-white">
+            <h5>System Uptime</h5>
+            <h3>{stats.systemHealth.systemUptime}</h3>
+            <small>Last 30 days</small>
+          </StatCard>
+        </div>
+        <div className="col-md-3">
+          <StatCard className="bg-secondary text-white">
+            <h5>Last Backup</h5>
+            <h3>{new Date(stats.systemHealth.lastBackup).toLocaleDateString()}</h3>
+            <small>System backup</small>
+          </StatCard>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="row mb-4">
+        <div className="col-12">
+          <DashCard>
+            <h5 className="mb-3">Quick Actions</h5>
+            <div className="row g-3">
+              <div className="col-md-3">
+                <button className="btn btn-outline-primary w-100" onClick={() => handleQuickAction("users")}>
+                  <i className="fas fa-users me-2"></i>Manage Users
+                </button>
+              </div>
+              <div className="col-md-3">
+                <button className="btn btn-outline-success w-100" onClick={() => handleQuickAction("branches")}>
+                  <i className="fas fa-building me-2"></i>Manage Branches
+                </button>
+              </div>
+              <div className="col-md-3">
+                <button className="btn btn-outline-danger w-100" onClick={() => handleQuickAction("reports")}>
+                  <i className="fas fa-chart-pie me-2"></i>Reports & Analytics
+                </button>
+              </div>
+              <div className="col-md-3">
+                <button className="btn btn-outline-warning w-100" onClick={() => handleQuickAction("maintenance")}>
+                  <i className="fas fa-tools me-2"></i>System Maintenance
+                </button>
+              </div>
+            </div>
+          </DashCard>
+        </div>
+      </div>
+
+      {/* Branch Performance */}
+      <div className="row mb-4">
+        <div className="col-md-8">
+          <DashCard>
+            <h5 className="mb-3">Branch Performance</h5>
+            <div className="table-responsive">
+              <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Branch Name</th>
+                    <th>Location</th>
+                    <th>Donors</th>
+                    <th>Blood Bags</th>
+                    <th>Utilization (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.branchPerformance.map(branch => (
+                    <tr key={branch.branchId}>
+                      <td>{branch.name}</td>
+                      <td>{branch.location}</td>
+                      <td>{branch.donorCount}</td>
+                      <td>{branch.inventoryCount}</td>
+                      <td>{branch.utilization.toFixed(2)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </DashCard>
+        </div>
+        <div className="col-md-4">
+          <DashCard>
+            <h5 className="mb-3">Recent Activity</h5>
+            <div className="list-group">
+              {stats.recentActivity.map((activity, index) => (
+                <div key={index} className="list-group-item">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 className="mb-1">{activity.type}</h6>
+                      <small className="text-muted">{activity.details}</small>
+                    </div>
+                    <small className="text-muted">
+                      {new Date(activity.timestamp).toLocaleTimeString()}
+                    </small>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </DashCard>
+        </div>
+      </div>
+      
+      {/* Reports & Analytics Section */}
+      <div className="row mb-4">
+        <div className="col-12">
+          <DashCard>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 className="mb-0">Reports & Analytics</h5>
+              <button 
+                className="btn btn-primary btn-sm"
+                onClick={() => handleQuickAction("reports")}
+              >
+                View All Reports
+              </button>
+            </div>
+            
+            <div className="row g-3">
+              <div className="col-md-4">
+                <div className="card h-100 border-0 shadow-sm">
+                  <div className="card-body">
+                    <h6 className="card-title">
+                      <i className="fas fa-calendar-alt text-primary me-2"></i>
+                      Monthly Donation Trends
+                    </h6>
+                    <p className="card-text text-muted small">
+                      Analysis of donation patterns and trends over the past months
+                    </p>
+                    <button 
+                      className="btn btn-sm btn-outline-primary" 
+                      onClick={() => handleQuickAction("reports")}
+                    >
+                      View Report
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="col-md-4">
+                <div className="card h-100 border-0 shadow-sm">
+                  <div className="card-body">
+                    <h6 className="card-title">
+                      <i className="fas fa-map-marker-alt text-danger me-2"></i>
+                      Geographic Distribution
+                    </h6>
+                    <p className="card-text text-muted small">
+                      Branch performance and donor distribution by location
+                    </p>
+                    <button 
+                      className="btn btn-sm btn-outline-danger" 
+                      onClick={() => handleQuickAction("reports")}
+                    >
+                      View Report
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="col-md-4">
+                <div className="card h-100 border-0 shadow-sm">
+                  <div className="card-body">
+                    <h6 className="card-title">
+                      <i className="fas fa-heartbeat text-success me-2"></i>
+                      Blood Requests Analysis
+                    </h6>
+                    <p className="card-text text-muted small">
+                      Statistics on blood requests, approvals, and fulfillment rates
+                    </p>
+                    <button 
+                      className="btn btn-sm btn-outline-success" 
+                      onClick={() => handleQuickAction("reports")}
+                    >
+                      View Report
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DashCard>
+        </div>
+      </div>
+      
+      {/* Blood Type Distribution */}
+      <div className="row">
+        <div className="col-12">
+          <DashCard>
+            <h5 className="mb-3">Blood Type Distribution</h5>
+            {Object.keys(stats.bloodTypeDistribution).length > 0 ? (
+              <div>
+                {Object.entries(stats.bloodTypeDistribution).map(([type, count]) => {
+                  const percentage = (count / stats.totalBloodBags) * 100;
+                  const bgColor = type === 'A' ? 'bg-danger' : 
+                                 type === 'B' ? 'bg-primary' : 
+                                 type === 'AB' ? 'bg-success' : 'bg-warning';
+                  return (
+                    <div key={type} className="mb-3">
+                      <div className="d-flex justify-content-between mb-1">
+                        <span>Type {type}</span>
+                        <span>{count} bags ({percentage.toFixed(1)}%)</span>
+                      </div>
+                      <div className="progress" style={{ height: '20px' }}>
+                        <div 
+                          className={`progress-bar ${bgColor}`}
+                          role="progressbar" 
+                          style={{ width: `${percentage}%` }}
+                          aria-valuenow={percentage} 
+                          aria-valuemin="0" 
+                          aria-valuemax="100"
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p>No blood bag data available</p>
+            )}
+          </DashCard>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SuperAdminDashboard; 

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tag above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Blood Bank Management System</title>
+    <script>
+      // Initialize dark mode based on localStorage settings
+      try {
+        const savedSettings = localStorage.getItem('userSettings');
+        if (savedSettings) {
+          const settings = JSON.parse(savedSettings);
+          if (settings && settings.darkMode) {
+            document.documentElement.classList.add('dark-mode-init');
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing dark mode:', error);
+      }
+    </script>
+    <style>
+      /* Prevent flash of unstyled content */
+      .dark-mode-init {
+        background-color: #222;
+        color: #e1e1e1;
+      }
+      .dark-mode-init body {
+        background-color: #222;
+        color: #e1e1e1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start`.
+      To create a production bundle, use `npm run build`.
+    -->
+    <script>
+      // Apply dark mode to body if needed when DOM is loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        try {
+          const savedSettings = localStorage.getItem('userSettings');
+          if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            if (settings && settings.darkMode) {
+              document.body.classList.add('dark-mode');
+            }
+          }
+          // Remove the init class as React takes over
+          document.documentElement.classList.remove('dark-mode-init');
+        } catch (error) {
+          console.error('Error applying dark mode on DOM load:', error);
+        }
+      });
+    </script>
+  </body>
+</html>

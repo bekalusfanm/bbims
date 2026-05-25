@@ -1,0 +1,454 @@
+/* custom.css */
+:root {
+  padding: 10px;
+  --primary-color: #dc3545;
+  --secondary-color: #e63946;
+  --accent-color: #a71d31;
+  --background-color: #ffffff;
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --text-secondary: #6c757d;
+  --border-color: #e9ecef;
+  --input-bg: #ffffff;
+  --input-border: #ddd;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-bg: #f8f9fa;
+  --table-stripe: #f2f2f2;
+  --navbar-bg: #f8f9fa;
+  --dropdown-bg: #ffffff;
+  --dropdown-hover: #f8f9fa;
+  --button-text: #ffffff;
+  --toast-bg: #ffffff;
+  --toast-text: #333333;
+}
+
+body.dark-mode {
+  --background-color: #222;
+  --card-background: #2c2c2c;
+  --text-color: #e1e1e1;
+  --text-secondary: #adb5bd;
+  --border-color: #3a3a3a;
+  --input-bg: #333;
+  --input-border: #444;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --hover-bg: #3a3a3a;
+  --table-stripe: #333;
+  --navbar-bg: #1a1a1a;
+  --dropdown-bg: #2c2c2c;
+  --dropdown-hover: #3a3a3a;
+  --button-text: #e1e1e1;
+  --toast-bg: #333;
+  --toast-text: #e1e1e1;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 20%,
+    var(--additional-color1) 40%,
+    var(--additional-color2) 60%,
+    var(--additional-color3) 80%,
+    var(--accent-color) 100%
+  );
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Reset background gradient in dark mode */
+body.dark-mode {
+  background: var(--background-color);
+}
+
+/* Example of using additional colors */
+.header {
+  background-color: var(--additional-color4);
+}
+
+.footer {
+  background-color: var(--additional-color5);
+}
+
+.button-primary {
+  background-color: var(--additional-color3);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.card {
+  background-color: var(--card-background);
+  box-shadow: 0 4px 8px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.card-header {
+  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.table {
+  color: var(--text-color);
+  transition: color 0.3s;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--table-stripe);
+  transition: background-color 0.3s;
+}
+
+input, select, textarea {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--text-color) !important;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s !important;
+}
+
+/* Ensure proper contrast for input text in dark mode */
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body.dark-mode .form-control,
+body.dark-mode .form-control:focus {
+  color: #e1e1e1 !important;
+  background-color: #333 !important;
+  border-color: #444 !important;
+}
+
+/* Ensure proper contrast for input placeholders in dark mode */
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder,
+body.dark-mode .form-control::placeholder {
+  color: #adb5bd !important;
+  opacity: 0.7;
+}
+
+/* Fix autofill styling in dark mode */
+body.dark-mode input:-webkit-autofill,
+body.dark-mode input:-webkit-autofill:hover, 
+body.dark-mode input:-webkit-autofill:focus,
+body.dark-mode textarea:-webkit-autofill,
+body.dark-mode textarea:-webkit-autofill:hover,
+body.dark-mode textarea:-webkit-autofill:focus,
+body.dark-mode select:-webkit-autofill,
+body.dark-mode select:-webkit-autofill:hover,
+body.dark-mode select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #e1e1e1 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #333 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark-mode .btn-secondary {
+  background-color: #444;
+  border-color: #555;
+}
+
+.dark-mode .btn-outline-primary {
+  color: #9fc3fe;
+  border-color: #9fc3fe;
+}
+
+.dark-mode .btn-outline-primary:hover {
+  background-color: #0d47a1;
+  color: white;
+}
+
+.dark-mode .progress {
+  background-color: #444;
+}
+
+.dark-mode .text-muted {
+  color: #adb5bd !important;
+}
+
+/* Navbar Dark Mode */
+.dark-mode .navbar {
+  background-color: var(--navbar-bg) !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dark-mode .navbar-brand, 
+.dark-mode .navbar-nav .nav-link {
+  color: var(--text-color) !important;
+}
+
+.dark-mode .navbar-nav .nav-link:hover {
+  color: var(--primary-color) !important;
+}
+
+/* Bootstrap Button Overrides */
+.dark-mode .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--button-text);
+}
+
+.dark-mode .btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: var(--button-text);
+}
+
+.dark-mode .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: var(--button-text);
+}
+
+.dark-mode .btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+}
+
+.dark-mode .btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  color: var(--button-text);
+}
+
+/* Form controls */
+.dark-mode .form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Modal styling */
+.dark-mode .modal-content {
+  background-color: var(--card-background);
+  border-color: var(--border-color);
+}
+
+.dark-mode .modal-header {
+  border-bottom-color: var(--border-color);
+}
+
+.dark-mode .modal-footer {
+  border-top-color: var(--border-color);
+}
+
+/* Alert styling */
+.dark-mode .alert {
+  background-color: var(--card-background);
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.dark-mode .alert-primary {
+  background-color: rgba(0, 123, 255, 0.2);
+  border-color: rgba(0, 123, 255, 0.3);
+}
+
+.dark-mode .alert-danger {
+  background-color: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.3);
+}
+
+.dark-mode .alert-success {
+  background-color: rgba(40, 167, 69, 0.2);
+  border-color: rgba(40, 167, 69, 0.3);
+}
+
+/* Badge styling */
+.dark-mode .badge {
+  background-color: var(--primary-color);
+}
+
+/* Toast notification */
+.dark-mode .Toastify__toast {
+  background-color: var(--card-background) !important;
+  color: var(--text-color) !important;
+  box-shadow: 0 4px 12px var(--shadow-color) !important;
+}
+
+/* Force dark mode for toast components */
+.Toastify .Toastify__toast-container--top-right .Toastify__toast--dark {
+  background-color: var(--toast-bg) !important;
+  color: var(--toast-text) !important;
+}
+
+/* Transition for all theme changes */
+.navbar, .dropdown-menu, .btn, .form-control, .alert, .badge, .progress, .table, 
+.card, .modal-content, .toast, .list-group-item {
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s !important;
+}
+
+/* Dark mode for main content areas */
+body.dark-mode .container,
+body.dark-mode main {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Dark mode for dropdown menus */
+body.dark-mode .dropdown-menu {
+  background-color: var(--dropdown-bg);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .dropdown-item {
+  color: var(--text-color);
+}
+
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+  background-color: var(--dropdown-hover);
+  color: var(--primary-color);
+}
+
+/* Dark mode for dashboard cards */
+body.dark-mode .dashboard-card {
+  background-color: var(--card-background);
+  color: var(--text-color);
+}
+
+/* Dark mode for tab content */
+body.dark-mode .nav-tabs .nav-link {
+  color: var(--text-color);
+}
+
+body.dark-mode .nav-tabs .nav-link.active {
+  background-color: var(--card-background);
+  color: var(--primary-color);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .tab-content {
+  background-color: var(--card-background);
+  border-color: var(--border-color);
+}
+
+/* Dark mode for list groups */
+body.dark-mode .list-group-item {
+  background-color: var(--card-background);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+/* Custom dark mode for specific components that might need it */
+body.dark-mode h1, 
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode p,
+body.dark-mode span:not(.badge),
+body.dark-mode div:not(.progress-bar) {
+  color: var(--text-color);
+}
+
+/* Dark mode styles for form groups and labels */
+body.dark-mode .form-group label,
+body.dark-mode .form-label {
+  color: var(--text-color);
+}
+
+/* Special handling for input field focus in dark mode */
+body.dark-mode .form-control:focus {
+  background-color: #3a3a3a !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Ensure proper contrast for input in login and registration forms */
+body.dark-mode .card .form-control,
+body.dark-mode .login-form .form-control,
+body.dark-mode .register-form .form-control {
+  background-color: #333 !important;
+  color: #e1e1e1 !important;
+  border-color: #444 !important;
+}
+
+/* Selected option in drop-down menus */
+body.dark-mode select option:checked,
+body.dark-mode select option:focus,
+body.dark-mode select option:active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Drop-down menu items */
+body.dark-mode select option {
+  background-color: #333;
+  color: #e1e1e1;
+}
+
+/* Dark mode for loading indicators */
+body.dark-mode .spinner-border,
+body.dark-mode .spinner-grow {
+  border-color: var(--text-color);
+  border-right-color: transparent;
+}
+
+/* Form controls focus state */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+body.dark-mode .form-control:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.4) !important;
+}
+
+/* Dark mode text-inputs active state - stronger highlight */
+body.dark-mode input:focus,
+body.dark-mode textarea:focus,
+body.dark-mode select:focus {
+  background-color: #3a3a3a !important;
+  color: #ffffff !important;
+  border-color: var(--primary-color) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.4) !important;
+}
+
+/* Enhanced visibility for focused dropdowns and selects */
+body.dark-mode .dropdown-menu:focus-within,
+body.dark-mode select:focus {
+  border-color: var(--primary-color) !important;
+}
+
+/* Style for highlighted/selected text in dark mode */
+body.dark-mode ::selection {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+/* Add custom invalid-feedback styles here */
+.invalid-feedback {
+  display: none;
+  width: 100%;
+  margin-top: .25rem;
+  font-size: 80%;
+  color: #dc3545;
+}
+
+.invalid-feedback[style*="display: block"] {
+  display: block !important;
+}
+
+/* Fix for spacing in Bootstrap 4 */
+.ms-2 {
+  margin-left: 0.5rem !important;
+}
+
+.me-2 {
+  margin-right: 0.5rem !important;
+}
+
+/* Add any other custom styles below */

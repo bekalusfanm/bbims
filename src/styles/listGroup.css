@@ -1,0 +1,41 @@
+/* custom.css */
+
+/* General list group styles */
+.list-group {
+  margin-bottom: 20px;
+  background-color: #5498db;
+}
+
+.list-group-item {
+  padding: 10px 15px;
+  border: 1px solid #2e1f1f;
+  background-color: #406f9e;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.list-group-item:hover {
+  background-color: #1f6bb8;
+}
+
+.list-group-item.active {
+  background-color: #2963af;
+  color: #aa6b6b;
+  border-color: #007bff;
+}
+
+/* Additional custom styles */
+.list-group-item-custom1 {
+  background-color: #ff7f50;
+  color: #bba0a0;
+}
+
+.list-group-item-custom2 {
+  background-color: #ffa500;
+  color: #af9191;
+}
+
+.list-group-item-custom3 {
+  background-color: #32cd32;
+  color: #978585;
+}

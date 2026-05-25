@@ -1,0 +1,19 @@
+.clickable-row:hover {
+  background-color: rgb(194, 192, 211);
+}
+
+.clickable-row td a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.clickable-row td {
+  position: relative;
+}
+
+.clickable-row:hover td a {
+  color: inherit;
+}

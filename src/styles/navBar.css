@@ -1,0 +1,334 @@
+.navbar {
+  background: linear-gradient(
+    90deg,
+    #dc3545 0%,
+    #e63946 40%,
+    #a71d31 100%
+  );
+  padding: 0.75rem 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border-radius: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark mode styles for navbar */
+body.dark-mode .navbar {
+  background: linear-gradient(
+    90deg,
+    #a71d31 0%,
+    #dc3545 40%,
+    #e63946 100%
+  );
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar .container {
+  max-width: 1280px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.logo {
+  height: 45px;
+  margin-right: 0;
+}
+
+.navbar-brand .nbbe-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.navbar-brand .logo-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.5px;
+  font-weight: 400;
+  margin-top: -2px;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav .nav-item {
+  margin: 0 2px;
+}
+
+.navbar-nav .nav-item .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  padding: 1rem 1rem;
+  transition: all 0.2s ease;
+  border-radius: 0;
+  position: relative;
+  white-space: nowrap;
+}
+
+.navbar-nav .nav-item .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  opacity: 0;
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.navbar-nav .nav-item .nav-link:hover::after,
+.navbar-nav .nav-item .nav-link.active::after {
+  width: 100%;
+  opacity: 1;
+}
+
+.navbar-nav .nav-item .nav-link.fade-in {
+  animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.navbar-nav .nav-item .nav-link:hover,
+.navbar-nav .nav-item .nav-link:focus,
+.navbar-nav .nav-item .nav-link.active {
+  color: #fff;
+  background-color: transparent;
+}
+
+.navbar-light .navbar-toggler {
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem;
+}
+
+.navbar-light .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Adding smooth scrolling effect for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Profile styling */
+.profile-container {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.profile-picture {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  margin-left: 8px;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Profile dropdown styles */
+.profile-dropdown {
+  position: relative;
+  margin-left: 10px;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  transition: background-color 0.2s ease;
+}
+
+.profile-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-link:hover .profile-picture {
+  transform: scale(1.05);
+  border-color: #fff;
+}
+
+.profile-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 220px;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  z-index: 1000;
+  padding: 0;
+  animation: fadeInDown 0.3s ease;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background-color: var(--hover-bg);
+  color: var(--primary-color);
+}
+
+.dropdown-item.text-danger {
+  color: #dc3545;
+}
+
+.dropdown-item.text-danger:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #ff6b70;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0;
+}
+
+/* FontAwesome icons in dropdown */
+.dropdown-item i {
+  width: 20px;
+  text-align: center;
+  margin-right: 12px;
+  font-size: 1rem;
+}
+
+.nav-link i {
+  font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+  
+  .navbar-collapse {
+    background-color: #dc3545;
+    margin: 0 -1rem;
+    padding: 1rem;
+  }
+  
+  body.dark-mode .navbar-collapse {
+    background-color: #a71d31;
+  }
+
+  .navbar-nav .nav-item {
+    margin: 0;
+  }
+  
+  .navbar-nav .nav-item .nav-link {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+  }
+  
+  .navbar-nav .nav-item .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .navbar-nav .nav-item .nav-link::after {
+    display: none;
+  }
+  
+  .profile-dropdown {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  
+  .profile-dropdown-menu {
+    position: static;
+    width: 100%;
+    margin-top: 10px;
+    box-shadow: none;
+    animation: none;
+  }
+}
+
+/* Ensure profile dropdown menu has proper dark mode theming */
+body.dark-mode .profile-dropdown-menu {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .dropdown-item {
+  color: var(--text-color);
+}
+
+body.dark-mode .dropdown-item:hover {
+  background-color: var(--hover-bg);
+  color: var(--primary-color);
+}
+
+body.dark-mode .dropdown-divider {
+  background-color: var(--border-color);
+}
+
+body.dark-mode .dropdown-item.text-danger:hover {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #ff6b70;
+}
+
+/* Make sure dark mode texts are visible in all dropdown items */
+body.dark-mode .text-muted {
+  color: var(--text-secondary) !important;
+}
+
+/* Force navbar brand colors to work in dark mode */
+body.dark-mode .navbar-brand .nbbe-text,
+body.dark-mode .navbar-brand .logo-subtitle,
+body.dark-mode .navbar-nav .nav-item .nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
